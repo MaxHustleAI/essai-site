@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>MALA Studio · piste A, plein cadre</title>
+  <link rel="icon" href="data:,">
+  <link rel="preload" as="image" href="/media/hal01-affiche-v1.jpg">
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/archivo-latin-wdth-normal.woff2" crossorigin>
+  <link rel="stylesheet" href="/maquette/commun.css">
+  <style>
+    /* Piste A : plein cadre. Le film occupe tout l'écran, comme une bande-annonce ; le nom du studio est le générique. */
+    body.a { font-family: "Archivo", system-ui, sans-serif; overflow: hidden; }
+    .a .scene { position: fixed; inset: 0; }
+    .a .scene::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(to top, rgba(0,0,0,.78) 0%, rgba(0,0,0,0) 48%), linear-gradient(to bottom, rgba(0,0,0,.45) 0%, rgba(0,0,0,0) 16%); }
+    .a header { position: fixed; z-index: 2; top: 0; right: 0; padding: max(1.1rem, env(safe-area-inset-top)) clamp(1.1rem, 4vw, 3rem) 0; }
+    .a nav { display: flex; gap: clamp(1rem, 2.4vw, 2.2rem); font-size: .95rem; font-stretch: 90%; }
+    .a nav a { text-decoration: none; }
+    .a nav a:hover { text-decoration: underline; text-underline-offset: .35em; text-decoration-thickness: 1px; }
+    .a main { position: fixed; z-index: 2; left: clamp(1.1rem, 4vw, 3rem); right: clamp(4.5rem, 10vw, 8rem);
+              bottom: max(1.5rem, calc(env(safe-area-inset-bottom) + .5rem)); }
+    .a h1 { font-weight: 800; font-stretch: 62%; font-size: clamp(4.4rem, 14.5vw, 12rem); line-height: .84; letter-spacing: -.005em; }
+    .a .phrase { margin-top: 1.1rem; max-width: 34ch; font-size: clamp(1.02rem, 1.25vw, 1.2rem); line-height: 1.45; font-stretch: 95%; }
+    .a .actions { margin-top: 1.5rem; display: flex; align-items: center; gap: 1.4rem; }
+    .a .voir { padding: .9rem 1.35rem; border: 0; background: var(--os); color: var(--noir); font-weight: 600; font-stretch: 90%; font-size: 1rem; cursor: pointer; }
+    .a .voir:hover { background: #fff; }
+    .a .lien { font-size: 1rem; text-decoration: underline; text-underline-offset: .35em; text-decoration-thickness: 1px; }
+    @media (min-aspect-ratio: 3 / 4) { .a .boucle { object-position: 50% 40%; } }
+    .a .pause { position: fixed; z-index: 2; right: clamp(1.1rem, 4vw, 3rem); bottom: max(1.5rem, calc(env(safe-area-inset-bottom) + .5rem)); }
+  </style>
+</head>
+<body class="a">
+  <div class="scene">
+    <video class="boucle" src="/media/hal01-boucle-v1.mp4" poster="/media/hal01-affiche-v1.jpg" muted loop playsinline preload="auto" aria-hidden="true"></video>
+  </div>
+  <header>
+    <nav aria-label="Main"><a href="#films">Films</a><a href="#studio">Studio</a><a href="#contact">Contact</a><a href="#fr" lang="fr">FR</a></nav>
+  </header>
+  <main>
+    <h1>MALA<br>Studio</h1>
+    <p class="phrase">[Ta phrase : ce qu'une marque peut te confier.]</p>
+    <div class="actions"><button class="voir" type="button" data-film>Watch HAL01</button><a class="lien" href="#contact">Contact</a></div>
+  </main>
+  <button class="pause" type="button" aria-label="Pause the loop"><svg class="i-pause" viewBox="0 0 10 10" aria-hidden="true"><rect x="1.5" y="1" width="2.4" height="8"/><rect x="6.1" y="1" width="2.4" height="8"/></svg><svg class="i-lire" viewBox="0 0 10 10" aria-hidden="true"><path d="M2.2 1 L9 5 L2.2 9 Z"/></svg></button>
+  <script type="module" src="/maquette/commun.js"></script>
+</body>
+</html>
