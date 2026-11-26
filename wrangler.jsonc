@@ -5,6 +5,6 @@
   "workers_dev": true,
   "preview_urls": true,
   "assets": { "directory": "./public" },
-  // Écrit le numéro de version (fourni par Cloudflare à la construction) dans la page.
-  "build": { "command": "sh -c 'echo \"${WORKERS_CI_COMMIT_SHA:-inconnue}\" > public/version.txt'" }
+  // Écrit le numéro de version et la branche (fournis par Cloudflare à la construction) dans la page.
+  "build": { "command": "sh -c 'echo \"${WORKERS_CI_COMMIT_SHA:-inconnue} ${WORKERS_CI_BRANCH:-}\" > public/version.txt'" }
 }

@@ -37,7 +37,7 @@
       `film : ${m.film}${m.filmDemarre != null ? ' en ' + ms(m.filmDemarre) : ''}`;
 
     fetch('version.txt', { cache: 'no-store' }).then(r => r.ok ? r.text() : 'inconnue')
-      .then(t => { m.version = t.trim().slice(0, 7) || 'inconnue'; show(); }).catch(() => { m.version = 'inconnue'; show(); });
+      .then(t => { const [s, b] = t.trim().split(/\s+/); m.version = (s || 'inconnue').slice(0, 7) + (b ? ' · ' + b : ''); show(); }).catch(() => { m.version = 'inconnue'; show(); });
 
     const img = new Image();
     img.onload = () => { m.affiche = performance.now() - t0; show(); };
