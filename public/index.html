@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Essai T1 — vidéo (page factice)</title>
+  <link rel="icon" href="data:,">
+  <link rel="preload" as="image" href="media/hal01-affiche-v1.jpg">
+  <style>
+    html, body { margin: 0; height: 100%; background: #000; color: #ddd; }
+    body { display: flex; align-items: center; justify-content: center; font: 14px/1.4 -apple-system, system-ui, sans-serif; }
+    video { display: block; width: 100%; height: 100svh; object-fit: contain; background: #000; }
+    #voir { position: fixed; left: 50%; bottom: calc(5.5rem + env(safe-area-inset-bottom)); transform: translateX(-50%);
+            padding: .8rem 1.4rem; white-space: nowrap; font: inherit; font-size: 16px; color: #000; background: #fff; border: 0; border-radius: 2rem; }
+    #voir:focus-visible { outline: 3px solid #4af; outline-offset: 3px; }
+    #mesures { position: fixed; left: .5rem; right: .5rem; bottom: calc(.5rem + env(safe-area-inset-bottom)); margin: 0; padding: .4rem .6rem;
+               font: 11px/1.35 ui-monospace, Menlo, monospace; background: rgba(0,0,0,.7); border-radius: .4rem; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <video id="v" poster="media/hal01-affiche-v1.jpg" src="media/hal01-boucle-v1.mp4"
+         autoplay muted loop playsinline preload="auto" aria-label="Boucle muette du film HAL01"></video>
+  <button id="voir" type="button">Voir le film avec le son</button>
+  <pre id="mesures" aria-live="polite">Mesures…</pre>
+
+  <script>
+    // Instruments de l'essai T1 : ce panneau n'existe que pour le test.
+    const t0 = performance.now(), v = document.getElementById('v'), out = document.getElementById('mesures');
+    const m = { version: '…', hebergement: 'avec le site', affiche: null, auto: 'en attente', mouvement: null,
+                coupures: 0, film: '—', filmDemarre: null };
+    const ms = x => x == null ? '…' : Math.round(x) + ' ms';
+    const show = () => out.textContent =
+      `version ${m.version} · vidéo : ${m.hebergement}\n` +
+      `affiche visible : ${ms(m.affiche)} · lecture auto : ${m.auto}\n` +
+      `1er mouvement : ${ms(m.mouvement)} · coupures : ${m.coupures}\n` +
+      `film : ${m.film}${m.filmDemarre != null ? ' en ' + ms(m.filmDemarre) : ''}`;
+
+    fetch('version.txt', { cache: 'no-store' }).then(r => r.ok ? r.text() : 'inconnue')
+      .then(t => { m.version = t.trim().slice(0, 7) || 'inconnue'; show(); }).catch(() => { m.version = 'inconnue'; show(); });
+
+    const img = new Image();
+    img.onload = () => { m.affiche = performance.now() - t0; show(); };
+    img.src = v.getAttribute('poster');
+
+    let demarre = false;
+    const premierMouvement = () => { if (!demarre) { demarre = true; m.mouvement = performance.now() - t0; m.auto = 'oui'; show(); } };
+    if ('requestVideoFrameCallback' in v) v.requestVideoFrameCallback(premierMouvement);
+    else v.addEventListener('playing', premierMouvement, { once: true });
+    v.addEventListener('waiting', () => { if (demarre && m.film !== 'chargement') { m.coupures++; show(); } });
+    const p = v.play(); if (p) p.catch(() => { m.auto = 'bloquée (affiche seule)'; show(); });
+    setTimeout(() => { if (!demarre && m.auto === 'en attente') { m.auto = 'pas démarrée après 5 s'; show(); } }, 5000);
+
+    document.getElementById('voir').addEventListener('click', () => {
+      const t1 = performance.now();
+      m.film = 'chargement'; show();
+      v.loop = false; v.muted = false; v.controls = true;
+      v.src = 'media/hal01-film-v1.mp4';
+      v.addEventListener('playing', () => { m.film = 'lu'; m.filmDemarre = performance.now() - t1; show(); }, { once: true });
+      v.play().catch(e => { m.film = 'erreur : ' + e.name; show(); });
+      document.getElementById('voir').hidden = true;
+    });
+    show();
+  </script>
+</body>
+</html>

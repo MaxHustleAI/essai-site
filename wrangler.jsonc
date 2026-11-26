@@ -1,0 +1,10 @@
+// Essai T1 (jetable) : page statique servie par Cloudflare Workers.
+{
+  "name": "essai-site",
+  "compatibility_date": "2026-06-01",
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": { "directory": "./public" },
+  // Écrit le numéro de version (fourni par Cloudflare à la construction) dans la page.
+  "build": { "command": "sh -c 'echo \"${WORKERS_CI_COMMIT_SHA:-inconnue}\" > public/version.txt'" }
+}
