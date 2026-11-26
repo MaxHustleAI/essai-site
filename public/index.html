@@ -43,13 +43,22 @@
     img.onload = () => { m.affiche = performance.now() - t0; show(); };
     img.src = v.getAttribute('poster');
 
-    let demarre = false;
-    const premierMouvement = () => { if (!demarre) { demarre = true; m.mouvement = performance.now() - t0; m.auto = 'oui'; show(); } };
-    if ('requestVideoFrameCallback' in v) v.requestVideoFrameCallback(premierMouvement);
-    else v.addEventListener('playing', premierMouvement, { once: true });
-    v.addEventListener('waiting', () => { if (demarre && m.film !== 'chargement') { m.coupures++; show(); } });
-    const p = v.play(); if (p) p.catch(() => { m.auto = 'bloquée (affiche seule)'; show(); });
-    setTimeout(() => { if (!demarre && m.auto === 'en attente') { m.auto = 'pas démarrée après 5 s'; show(); } }, 5000);
+    // Le 1er mouvement = la vidéo joue vraiment (événement « playing »), pas seulement une image affichée.
+    let demarre = false, touche = false;
+    addEventListener('pointerdown', () => { touche = true; }, { capture: true, once: true });
+    v.addEventListener('playing', () => {
+      if (demarre || m.film !== '—') return;
+      const marque = () => {
+        if (demarre) return;
+        demarre = true; m.mouvement = performance.now() - t0;
+        m.auto = touche ? 'non (démarrée au toucher)' : 'oui'; show();
+      };
+      if ('requestVideoFrameCallback' in v) v.requestVideoFrameCallback(marque); else marque();
+    });
+    // Une coupure = la lecture attend des données ; le retour au début de la boucle (seeking) n'en est pas une.
+    v.addEventListener('waiting', () => { if (demarre && !v.seeking && m.film !== 'chargement') { m.coupures++; show(); } });
+    const p = v.play(); if (p) p.catch(() => { if (!demarre) { m.auto = 'non (bloquée, affiche seule)'; show(); } });
+    setTimeout(() => { if (!demarre && m.auto === 'en attente') { m.auto = 'non (pas démarrée après 5 s)'; show(); } }, 5000);
 
     document.getElementById('voir').addEventListener('click', () => {
       const t1 = performance.now();
