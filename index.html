@@ -1,0 +1,21 @@
+---
+---
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Essai — page factice</title>
+  <style>
+    body { font-family: -apple-system, system-ui, sans-serif; margin: 2rem; line-height: 1.5; }
+    .version { font-family: ui-monospace, Menlo, monospace; font-size: 1.4rem; padding: .5rem .75rem; border: 1px solid #888; display: inline-block; }
+  </style>
+</head>
+<body>
+  <h1>Page factice</h1>
+  <p>Essai des pouvoirs de Claude sur GitHub. Ce n'est pas le site de MALA Studio.</p>
+  <p>Version affichée par cet aperçu :</p>
+  <p class="version">{{ site.github.build_revision | slice: 0, 7 }}</p>
+</body>
+</html>

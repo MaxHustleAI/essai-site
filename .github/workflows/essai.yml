@@ -1,0 +1,19 @@
+name: Essai
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  bulletin:
+    name: Bulletin (essai)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: La page factice existe
+        run: test -f index.html
+      - name: Version contrôlée
+        env:
+          VERSION: ${{ github.event.pull_request.head.sha }}
+        run: |
+          echo "Version contrôlée : ${VERSION:0:7}"
+          echo "### Version contrôlée : \`${VERSION:0:7}\`" >> "$GITHUB_STEP_SUMMARY"
